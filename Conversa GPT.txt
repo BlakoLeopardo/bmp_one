@@ -1,0 +1,85 @@
+bitmap.bmp
+Arquivo
+BitMap.c
+Arquivo
+O que tem de errado nesses arquivos? Tentei Compilar e não deu]
+
+Pensou por 45 segundos
+Analisando o código em BitMap.c 
+, o próprio código da aplicação Windows parece estar correto do ponto de vista da API do Windows. Assim, é provável que os problemas na compilação não estejam na lógica do código, mas sim em questões do ambiente de desenvolvimento. Aqui estão alguns pontos a verificar:
+
+Ambiente de Compilação
+O código utiliza <windows.h> e funções da API do Windows, o que significa que ele só pode ser compilado em ambiente Windows (ou utilizando ferramentas como o MinGW, que emulam esse ambiente). Se você estiver tentando compilar em Linux ou macOS, o compilador não encontrará os cabeçalhos e funções necessários.
+
+Opções de Compilação e Linkagem
+
+Se estiver usando o MinGW, lembre-se de compilar como uma aplicação GUI. Utilize a flag -mwindows para definir o ponto de entrada como WinMain e não main.
+Também é necessário linkar com as bibliotecas apropriadas, como gdi32.lib (no MinGW, adicionando -lgdi32).
+Sem essas opções, o compilador pode não encontrar as definições das funções usadas, resultando em erros de linkagem.
+Comentários de Linha Única (//)
+Embora os comentários com “//” sejam padrão em C99 (e a maioria dos compiladores modernos já os suportem), se você estiver utilizando um compilador mais antigo configurado para o padrão C89, esses comentários podem causar erros. Nesse caso, substitua-os por comentários em bloco (/* ... */).
+
+Arquivo bitmap.bmp
+O código carrega o arquivo "bitmap.bmp" em tempo de execução, esperando que ele esteja no mesmo diretório do executável. Caso o arquivo não esteja presente ou não esteja em um formato válido, o programa exibirá uma mensagem de erro. Porém, isso afetaria a execução e não a compilação propriamente dita.
+
+Em resumo, se você está tendo problemas ao compilar, verifique se:
+
+Está compilando em um ambiente Windows ou com um compilador configurado para aplicações Windows.
+As flags de compilação (por exemplo, -mwindows e -lgdi32 se estiver usando MinGW) estão sendo utilizadas.
+O padrão de compilação aceita comentários do tipo // (ou adapte o código se necessário).
+Se todas essas condições estiverem corretas, o código deve compilar sem problemas.
+
+
+
+
+
+
+
+Você disse:
+Deu esse erro quando tentei compilar com o -lgdi32 no terminal: C:/MSYS264/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: cannot open output file BitMap.exe: Permission denied
+collect2.exe: error: ld returned 1 exit status
+PS C:\Users\lucif\OneDrive\Documentos\GitHubRepositories\aaaaaaaaaaa\bmp_one>
+Pensou por 16 segundos
+O erro "Permission denied" indica que o linker não conseguiu abrir ou sobrescrever o arquivo de saída (BitMap.exe). Geralmente, isso acontece por uma das seguintes razões:
+
+Arquivo em uso: Verifique se o BitMap.exe não está sendo executado ou aberto em algum processo. Se estiver, feche-o antes de recompilar.
+Permissões de pasta: Certifique-se de que você tenha permissões suficientes para escrever no diretório onde o executável está sendo gerado.
+Sincronização com OneDrive: Como o projeto está em uma pasta do OneDrive, é possível que a sincronização esteja travando o arquivo. Tente mover o projeto para uma pasta local que não esteja sendo sincronizada.
+Privilégios administrativos: Em alguns casos, executar o terminal com privilégios de administrador pode resolver problemas de permissão.
+Verifique esses pontos e tente compilar novamente.
+
+
+
+
+
+
+
+Você disse:
+Apaguei o .exe antigo e recompilei, deu tudo certo, mas o arquivo continua não achando o arquivo .bmp
+Pensou por 17 segundos
+Esse erro indica que, em tempo de execução, o programa não está conseguindo localizar o arquivo "bitmap.bmp". Algumas dicas para resolver esse problema:
+
+Localização do arquivo: Certifique-se de que o arquivo "bitmap.bmp" esteja no mesmo diretório onde o executável está sendo executado. Lembre-se que o caminho relativo utilizado em LoadImage (apenas "bitmap.bmp") depende do diretório de trabalho atual.
+
+Nome do arquivo: Verifique se o nome do arquivo está exatamente como esperado (por exemplo, "bitmap.bmp" em letras minúsculas). Qualquer discrepância (como "Bitmap.bmp") pode impedir o carregamento.
+
+Caminho absoluto (opcional): Se continuar tendo problemas, tente fornecer um caminho absoluto para o arquivo para confirmar que o problema está realmente na localização.
+
+Diretório de trabalho: Se estiver executando o programa a partir de um terminal ou IDE, verifique qual é o diretório de trabalho configurado. Pode ser diferente do diretório onde o executável está localizado.
+
+Seguindo essas orientações, o programa deverá conseguir localizar e carregar o arquivo bitmap corretamente.
+
+
+
+
+
+
+
+Você disse:
+Oque é o caminho absoluto?
+Pensou por 7 segundos
+Um caminho absoluto é a especificação completa da localização de um arquivo ou diretório, começando pela raiz do sistema de arquivos. Por exemplo, no Windows, um caminho absoluto pode ser algo como:
+
+C:\Users\SeuUsuario\Documentos\bitmap.bmp
+
+Isso garante que, independentemente de onde o programa esteja sendo executado, ele sempre saiba exatamente onde encontrar o arquivo. Em contraste, um caminho relativo é definido em relação ao diretório de trabalho atual, podendo causar problemas se esse diretório não for o esperado.

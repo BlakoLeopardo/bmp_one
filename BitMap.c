@@ -4,7 +4,14 @@
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 // Variável global para armazenar o handle do bitmap.
-HBITMAP hBitmap = NULL;
+hBitmap = (HBITMAP)LoadImage(
+    NULL,
+    "C:\\BitMap\\bitmap.bmp", // Substitua pelo seu caminho
+    IMAGE_BITMAP,
+    0,
+    0,
+    LR_LOADFROMFILE | LR_CREATEDIBSECTION
+);
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
     // 1. Registro da classe de janela.
@@ -54,14 +61,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
     switch (message) {
         case WM_CREATE: {
-            // WM_CREATE: Mensagem enviada durante a criação da janela.
-            // Carrega o bitmap do arquivo "bitmap.bmp". Certifique-se de que o arquivo esteja no mesmo diretório do executável.
-            hBitmap = (HBITMAP)LoadImage(NULL, "bitmap.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-            if (hBitmap == NULL) {
-                MessageBox(hwnd, "Não foi possível carregar o bitmap!", "Erro", MB_OK | MB_ICONERROR);
-            }
+    // Caminho absoluto para testes (substitua pelo seu)
+    const char* bitmapPath = "C:\\BitMap\\bitmap.bmp";
+    
+    hBitmap = (HBITMAP)LoadImage(
+        NULL,
+        bitmapPath,
+        IMAGE_BITMAP,
+        0,
+        0,
+        LR_LOADFROMFILE | LR_CREATEDIBSECTION
+    );
+
+    if (!hBitmap) {
+        char msg[512];
+        snprintf(msg, sizeof(msg), "Arquivo não encontrado:\n%s", bitmapPath);
+        MessageBox(hwnd, msg, "Erro 2 - Arquivo ausente", MB_ICONERROR | MB_OK);
+    }
+    break;
         }
-        break;
 
         case WM_PAINT: {
             // WM_PAINT: Mensagem enviada quando a janela precisa ser redesenhada.
